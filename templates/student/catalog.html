@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Course Catalog - Enterprise LMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Course Catalog</h1>
+    <p class="page-subtitle">Discover accredited engineering, computer science, and data science courses</p>
+  </div>
+</div>
+
+<!-- Filters Bar -->
+<div class="card" style="margin-bottom: 2rem; padding: 1rem 1.5rem;">
+  <form method="GET" action="{{ url_for('student.catalog') }}" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+    <div style="flex: 1; min-width: 220px;">
+      <label class="form-label" style="font-size: 0.8rem;">Search Catalog</label>
+      <input type="text" name="q" class="form-control" placeholder="Search title or keywords..." value="{{ current_q }}">
+    </div>
+    <div style="min-width: 170px;">
+      <label class="form-label" style="font-size: 0.8rem;">Category</label>
+      <select name="category" class="form-control">
+        <option value="">All Categories</option>
+        <option value="Computer Science" {% if current_cat == 'Computer Science' %}selected{% endif %}>Computer Science</option>
+        <option value="Data Science" {% if current_cat == 'Data Science' %}selected{% endif %}>Data Science & AI</option>
+        <option value="Web Engineering" {% if current_cat == 'Web Engineering' %}selected{% endif %}>Web Engineering</option>
+        <option value="Cybersecurity" {% if current_cat == 'Cybersecurity' %}selected{% endif %}>Cybersecurity</option>
+      </select>
+    </div>
+    <div style="min-width: 150px;">
+      <label class="form-label" style="font-size: 0.8rem;">Difficulty</label>
+      <select name="difficulty" class="form-control">
+        <option value="">All Levels</option>
+        <option value="Beginner" {% if current_diff == 'Beginner' %}selected{% endif %}>Beginner</option>
+        <option value="Intermediate" {% if current_diff == 'Intermediate' %}selected{% endif %}>Intermediate</option>
+        <option value="Advanced" {% if current_diff == 'Advanced' %}selected{% endif %}>Advanced</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-secondary btn-sm" style="height: 38px;">Filter</button>
+  </form>
+</div>
+
+<!-- Courses Grid -->
+<div class="grid-3">
+  {% for c in page_data.items %}
+    <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+          <span class="badge badge-primary">{{ c.code }}</span>
+          <span class="badge badge-info">{{ c.difficulty }}</span>
+        </div>
+        <h2 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+          <a href="{{ url_for('student.course_detail', slug=c.slug) }}" style="color: inherit;">{{ c.title }}</a>
+        </h2>
+        <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+          {{ c.short_description | truncate(110) }}
+        </p>
+
+        <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1.25rem;">
+          <div>👨‍🏫 Instructor: <strong>{{ c.instructor.user.full_name if c.instructor else 'Faculty Team' }}</strong></div>
+          <div>⏱️ Duration: <strong>{{ c.duration_hours }} Hours</strong> &bull; 📜 Certificate: <strong>Available</strong></div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.5rem;">
+        <a href="{{ url_for('student.course_detail', slug=c.slug) }}" class="btn btn-secondary btn-sm" style="flex: 1;">Overview</a>
+        <form action="{{ url_for('student.enroll', course_id=c.id) }}" method="POST" style="flex: 1;">
+          <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;">Enroll Now</button>
+        </form>
+      </div>
+    </div>
+  {% else %}
+    <p style="grid-column: 1 / -1; text-align: center; color: var(--text-secondary); padding: 3rem 0;">No courses matched your search criteria.</p>
+  {% endfor %}
+</div>
+{% endblock %}

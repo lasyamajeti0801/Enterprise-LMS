@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results - Enterprise LMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Search Results: "{{ query }}"</h1>
+    <p class="page-subtitle">Results across course catalog, lessons, users, and discussions</p>
+  </div>
+</div>
+
+<div class="grid-2">
+  <!-- Course Results -->
+  <div class="card">
+    <h2 class="card-title">📚 Courses ({{ results.courses | length }})</h2>
+    {% if results.courses %}
+      <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+        {% for c in results.courses %}
+          <li style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+            <a href="{{ url_for('student.course_detail', slug=c.slug) }}" style="font-weight: 700; color: var(--primary);">
+              {{ c.code }}: {{ c.title }}
+            </a>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">{{ c.short_description | truncate(90) }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p style="color: var(--text-muted); padding: 1rem 0;">No matching courses.</p>
+    {% endif %}
+  </div>
+
+  <!-- Lesson Results -->
+  <div class="card">
+    <h2 class="card-title">📄 Lessons ({{ results.lessons | length }})</h2>
+    {% if results.lessons %}
+      <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+        {% for l in results.lessons %}
+          <li style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+            <div style="font-weight: 700; color: var(--text-primary);">{{ l.title }}</div>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">{{ l.summary or 'Instructional unit' }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p style="color: var(--text-muted); padding: 1rem 0;">No matching lessons.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

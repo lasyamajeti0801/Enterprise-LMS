@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Submissions: {{ assignment.title }} - Instructor Portal{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Review Submissions: {{ assignment.title }}</h1>
+    <p class="page-subtitle">{{ assignment.course.code }} &bull; Max Marks: {{ assignment.max_marks }} pts &bull; Due: {{ assignment.due_date.strftime('%Y-%m-%d %H:%M') }}</p>
+  </div>
+  <a href="{{ url_for('instructor.assignments', course_id=assignment.course_id) }}" class="btn btn-secondary btn-sm">&larr; Back to Assignments</a>
+</div>
+
+<div class="card">
+  {% if assignment.submissions %}
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Submission Date</th>
+            <th>Work / Answer</th>
+            <th>Score</th>
+            <th>Feedback</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sub in assignment.submissions %}
+            <tr>
+              <td>
+                <div style="font-weight: 700; color: var(--text-primary);">{{ sub.student.user.full_name }}</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">{{ sub.student.student_id_number }}</div>
+              </td>
+              <td>
+                <div style="font-size: 0.85rem;">{{ sub.submitted_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                {% if sub.is_late %}
+                  <span class="badge badge-warning">LATE SUBMISSION</span>
+                {% else %}
+                  <span class="badge badge-success">ON TIME</span>
+                {% endif %}
+              </td>
+              <td style="max-width: 250px;">
+                <div style="font-size: 0.85rem; color: var(--text-secondary); max-height: 80px; overflow-y: auto; background: var(--bg-input); padding: 0.5rem; border-radius: var(--radius-sm);">
+                  {{ sub.submission_text or 'No text notes provided' }}
+                </div>
+              </td>
+              <td>
+                <form action="{{ url_for('instructor.grade_submission', submission_id=sub.id) }}" method="POST" style="display: flex; flex-direction: column; gap: 0.4rem; min-width: 140px;">
+                  <input type="number" step="0.5" name="score" class="form-control form-control-sm" placeholder="Score / {{ assignment.max_marks }}" value="{{ sub.score if sub.score is not None else '' }}" required>
+                  <input type="text" name="feedback" class="form-control form-control-sm" placeholder="Instructor remarks..." value="{{ sub.instructor_feedback or '' }}">
+                  <button type="submit" class="btn btn-primary btn-sm">Save Grade</button>
+                </form>
+              </td>
+              <td>
+                {% if sub.status == 'graded' %}
+                  <span class="badge badge-success">GRADED ({{ sub.score }}/{{ assignment.max_marks }})</span>
+                {% else %}
+                  <span class="badge badge-warning">PENDING REVIEW</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p style="text-align: center; color: var(--text-secondary); padding: 2rem 0;">No student submissions received for this assignment yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

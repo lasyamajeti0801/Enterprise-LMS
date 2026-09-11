@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Certificates & Credentials - Student Portal{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Certificates & Verified Credentials</h1>
+    <p class="page-subtitle">Generate, download, and verify your accredited course completion credentials</p>
+  </div>
+</div>
+
+<div class="grid-2">
+  {% for item in cert_status %}
+    <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; border-left: 4px solid {% if item.certificate %}#10b981{% elif item.is_eligible %}#3b82f6{% else %}#6b7280{% endif %};">
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+          <span class="badge badge-primary">{{ item.course.code }}</span>
+          {% if item.certificate %}
+            <span class="badge badge-success">🏆 ISSUED</span>
+          {% elif item.is_eligible %}
+            <span class="badge badge-warning">⚡ ELIGIBLE TO CLAIM</span>
+          {% else %}
+            <span class="badge badge-danger">IN PROGRESS</span>
+          {% endif %}
+        </div>
+
+        <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+          {{ item.course.title }}
+        </h2>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+          Instructor: {{ item.course.instructor.user.full_name if item.course.instructor else 'Department Faculty' }}
+        </p>
+
+        {% if item.certificate %}
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 1.25rem; font-size: 0.85rem;">
+            <div>Certificate No: <strong>{{ item.certificate.certificate_number }}</strong></div>
+            <div>Verification Code: <strong style="font-family: monospace; color: var(--primary);">{{ item.certificate.verification_code }}</strong></div>
+            <div>Issued Date: {{ item.certificate.issue_date.strftime('%B %d, %Y') }}</div>
+          </div>
+        {% else %}
+          <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+            Criteria: {{ item.reason }}
+          </div>
+        {% endif %}
+      </div>
+
+      <div>
+        {% if item.certificate %}
+          <div style="display: flex; gap: 0.5rem;">
+            <a href="{{ url_for('student.download_certificate', course_id=item.course.id) }}" class="btn btn-success btn-sm" style="flex: 1;">
+              📥 Download PDF Certificate
+            </a>
+            <a href="{{ url_for('common.verify_certificate', verification_code=item.certificate.verification_code) }}" class="btn btn-secondary btn-sm" target="_blank">
+              Verify
+            </a>
+          </div>
+        {% elif item.is_eligible %}
+          <form action="{{ url_for('student.generate_certificate', course_id=item.course.id) }}" method="POST">
+            <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;">
+              🎓 Claim & Generate Certificate (+500 XP)
+            </button>
+          </form>
+        {% else %}
+          <a href="{{ url_for('student.learn_course', course_id=item.course.id) }}" class="btn btn-secondary btn-sm" style="width: 100%;">
+            Complete Course Requirements &rarr;
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  {% else %}
+    <p style="grid-column: 1 / -1; text-align: center; color: var(--text-secondary); padding: 3rem 0;">No enrolled courses found.</p>
+  {% endfor %}
+</div>
+{% endblock %}

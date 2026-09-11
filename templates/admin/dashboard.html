@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Enterprise LMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Administrator Dashboard</h1>
+    <p class="page-subtitle">Real-time platform governance and metrics overview</p>
+  </div>
+  <div style="display: flex; gap: 0.75rem;">
+    <a href="{{ url_for('admin.create_user') }}" class="btn btn-primary btn-sm">➕ Add User</a>
+    <a href="{{ url_for('admin.reports') }}" class="btn btn-secondary btn-sm">📥 Export Reports</a>
+  </div>
+</div>
+
+<!-- KPI Cards -->
+<div class="grid-4" style="margin-bottom: 2rem;">
+  <div class="kpi-card">
+    <div class="kpi-card-header">
+      <span class="kpi-title">Total Learners</span>
+      <div class="kpi-icon">🎓</div>
+    </div>
+    <div class="kpi-value">{{ analytics.total_students }}</div>
+    <div class="kpi-subtext">Active enrolled students</div>
+  </div>
+
+  <div class="kpi-card">
+    <div class="kpi-card-header">
+      <span class="kpi-title">Faculty</span>
+      <div class="kpi-icon">👨‍🏫</div>
+    </div>
+    <div class="kpi-value">{{ analytics.total_instructors }}</div>
+    <div class="kpi-subtext">Approved instructors</div>
+  </div>
+
+  <div class="kpi-card">
+    <div class="kpi-card-header">
+      <span class="kpi-title">Courses</span>
+      <div class="kpi-icon">📚</div>
+    </div>
+    <div class="kpi-value">{{ analytics.total_courses }}</div>
+    <div class="kpi-subtext">{{ analytics.published_courses }} live in catalog</div>
+  </div>
+
+  <div class="kpi-card">
+    <div class="kpi-card-header">
+      <span class="kpi-title">Certificates</span>
+      <div class="kpi-icon">🏆</div>
+    </div>
+    <div class="kpi-value">{{ analytics.certificates_issued }}</div>
+    <div class="kpi-subtext">Credentials issued</div>
+  </div>
+</div>
+
+<div class="grid-2" style="margin-bottom: 2rem;">
+  <!-- Course Approval Queue -->
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">Pending Course Approvals</h2>
+      <a href="{{ url_for('admin.courses') }}" class="btn btn-secondary btn-sm">View All</a>
+    </div>
+    {% if pending_courses %}
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Title</th>
+              <th>Instructor</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in pending_courses %}
+              <tr>
+                <td><strong>{{ c.code }}</strong></td>
+                <td>{{ c.title }}</td>
+                <td>{{ c.instructor.user.full_name if c.instructor else 'N/A' }}</td>
+                <td>
+                  <form action="{{ url_for('admin.approve_course', course_id=c.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p style="color: var(--text-secondary); text-align: center; padding: 2rem 0;">No courses currently awaiting review.</p>
+    {% endif %}
+  </div>
+
+  <!-- Recent Audit Logs -->
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">Recent System Audit Trail</h2>
+      <a href="{{ url_for('admin.audit_logs') }}" class="btn btn-secondary btn-sm">Full Logs</a>
+    </div>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Entity</th>
+            <th>Status</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in recent_logs %}
+            <tr>
+              <td><span class="badge badge-primary">{{ log.action }}</span></td>
+              <td>{{ log.entity_type }} ({{ log.entity_id or '-' }})</td>
+              <td><span class="badge badge-success">{{ log.status }}</span></td>
+              <td style="font-size: 0.8rem;">{{ log.timestamp.strftime('%H:%M:%S') }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Quizzes: {{ course.title }} - Instructor Portal{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Course Quizzes: {{ course.code }}</h1>
+    <p class="page-subtitle">{{ course.title }} &bull; Timed evaluations, question banks, and auto-grading</p>
+  </div>
+  <a href="{{ url_for('instructor.create_quiz', course_id=course.id) }}" class="btn btn-primary btn-sm">➕ Create New Quiz</a>
+</div>
+
+<div class="card">
+  {% if course.quizzes %}
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Quiz Title</th>
+            <th>Time Limit</th>
+            <th>Passing Score</th>
+            <th>Questions</th>
+            <th>Attempts Recorded</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for q in course.quizzes %}
+            <tr>
+              <td>
+                <div style="font-weight: 700; color: var(--text-primary);">{{ q.title }}</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">{{ q.description or 'No description' }}</div>
+              </td>
+              <td>⏱️ {{ q.time_limit_minutes }} mins</td>
+              <td>{{ q.passing_percentage }}%</td>
+              <td><span class="badge badge-info">{{ q.questions | length }} items ({{ q.total_marks }} pts)</span></td>
+              <td><span class="badge badge-primary">{{ q.attempts | length }} attempts</span></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p style="text-align: center; color: var(--text-secondary); padding: 2rem 0;">No quizzes created for this course yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

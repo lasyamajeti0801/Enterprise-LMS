@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}{{ course.title }} - Enterprise LMS{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+  <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+    <a href="{{ url_for('student.catalog') }}" class="btn btn-secondary btn-sm">&larr; Back to Catalog</a>
+  </div>
+
+  <div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; gap: 0.75rem; margin-bottom: 0.75rem;">
+      <span class="badge badge-primary">{{ course.code }}</span>
+      <span class="badge badge-info">{{ course.category }}</span>
+      <span class="badge badge-warning">{{ course.difficulty }}</span>
+    </div>
+
+    <h1 class="page-title" style="font-size: 2.2rem; margin-bottom: 0.75rem;">{{ course.title }}</h1>
+    <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.6;">{{ course.full_description }}</p>
+
+    <div class="grid-3" style="margin-bottom: 2rem; background: rgba(255, 255, 255, 0.02); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+      <div>
+        <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Lead Instructor</span>
+        <div style="font-weight: 700; color: var(--text-primary); margin-top: 0.2rem;">{{ course.instructor.user.full_name if course.instructor else 'Department Faculty' }}</div>
+      </div>
+      <div>
+        <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Total Modules & Lessons</span>
+        <div style="font-weight: 700; color: var(--text-primary); margin-top: 0.2rem;">{{ course.modules | length }} Units</div>
+      </div>
+      <div>
+        <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Accredited Certificate</span>
+        <div style="font-weight: 700; color: var(--success); margin-top: 0.2rem;">Verified PDF Included</div>
+      </div>
+    </div>
+
+    {% if enrollment %}
+      <div style="display: flex; align-items: center; justify-content: space-between; background: var(--primary-light); padding: 1rem 1.5rem; border-radius: var(--radius-md);">
+        <div>
+          <div style="font-weight: 700; color: var(--primary);">You are enrolled in this course!</div>
+          <div style="font-size: 0.85rem; color: var(--text-secondary);">Current Progress: {{ enrollment.progress_percentage }}%</div>
+        </div>
+        <a href="{{ url_for('student.learn_course', course_id=course.id) }}" class="btn btn-primary btn-lg">▶️ Continue Course Player</a>
+      </div>
+    {% else %}
+      <form action="{{ url_for('student.enroll', course_id=course.id) }}" method="POST">
+        <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">Enroll in this Course Now</button>
+      </form>
+    {% endif %}
+  </div>
+
+  <!-- Syllabus Hierarchy -->
+  <div class="card">
+    <h2 class="card-title" style="margin-bottom: 1.5rem;">Curriculum & Syllabus Breakdown</h2>
+    {% for m in course.modules %}
+      <div style="margin-bottom: 1.25rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem;">
+        <div style="font-weight: 700; color: var(--text-primary); font-size: 1.05rem; margin-bottom: 0.5rem;">
+          📁 {{ m.title }}
+        </div>
+        <ul style="list-style: none; padding-left: 1rem; display: flex; flex-direction: column; gap: 0.4rem;">
+          {% for l in m.lessons %}
+            <li style="font-size: 0.9rem; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between;">
+              <span>📄 {{ l.title }}</span>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">{{ l.duration_minutes }} mins</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

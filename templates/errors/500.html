@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}500 - Internal Error{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 4rem 1rem;">
+  <div style="font-size: 4rem; margin-bottom: 1rem;">⚠️</div>
+  <h1 class="page-title" style="color: var(--warning); font-size: 2.5rem; margin-bottom: 0.5rem;">500 - System Error</h1>
+  <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto 2rem;">
+    An internal application error occurred. The incident has been logged in the audit trail.
+  </p>
+  <a href="{{ url_for('auth.landing') }}" class="btn btn-primary">Return to Home</a>
+</div>
+{% endblock %}

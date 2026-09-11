@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Verify Credential - Enterprise LMS{% endblock %}
+
+{% block content %}
+<div style="max-width: 650px; margin: 2rem auto;">
+  <div class="card" style="text-align: center; padding: 2.5rem;">
+    <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Certificate Verification Portal</h2>
+    <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+      Verify the cryptographic authenticity of certificates and credentials issued by the institution.
+    </p>
+
+    <!-- Verification Lookup Form -->
+    <form method="GET" action="{{ url_for('common.verify_certificate') }}" style="display: flex; gap: 0.5rem; margin-bottom: 2rem;">
+      <input type="text" name="code" class="form-control" placeholder="Enter verification code or certificate number..." value="{{ code or '' }}" required style="flex: 1;">
+      <button type="submit" class="btn btn-primary" style="white-space: nowrap;">
+        Verify Credential
+      </button>
+    </form>
+
+    {% if code %}
+      {% if cert_info and cert_info.is_valid %}
+        <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🏅</div>
+        <span class="badge badge-success" style="font-size: 0.9rem; margin-bottom: 1rem; padding: 0.4rem 0.8rem;">VERIFIED AUTHENTIC CREDENTIAL</span>
+        <h1 class="page-title" style="font-size: 1.8rem; margin-bottom: 0.5rem;">{{ cert_info.course_title }}</h1>
+        <p style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+          Issued to <strong>{{ cert_info.student_name }}</strong> ({{ cert_info.student_id }})
+        </p>
+
+        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; text-align: left; margin-bottom: 1.5rem; font-size: 0.9rem;">
+          <div style="margin-bottom: 0.4rem;"><strong>Certificate Number:</strong> {{ cert_info.certificate_number }}</div>
+          <div style="margin-bottom: 0.4rem;"><strong>Verification Code:</strong> <span style="font-family: monospace; color: var(--primary);">{{ cert_info.verification_code }}</span></div>
+          <div style="margin-bottom: 0.4rem;"><strong>Issue Date:</strong> {{ cert_info.issue_date }}</div>
+          <div><strong>Accreditation Score:</strong> {{ cert_info.final_grade }}</div>
+        </div>
+      {% else %}
+        <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">❌</div>
+        <h3 class="page-title" style="color: var(--danger); font-size: 1.5rem; margin-bottom: 0.5rem;">Invalid or Unverified Code</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+          The verification code <strong>"{{ code }}"</strong> could not be verified in the institutional database.
+        </p>
+      {% endif %}
+    {% endif %}
+
+    <div style="margin-top: 1rem;">
+      <a href="{{ url_for('auth.landing') }}" class="btn btn-secondary btn-sm">&larr; Return to Home</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

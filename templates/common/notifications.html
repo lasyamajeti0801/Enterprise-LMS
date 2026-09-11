@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications Inbox - Enterprise LMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Notification Inbox</h1>
+    <p class="page-subtitle">Real-time alerts regarding evaluations, approvals, and course announcements</p>
+  </div>
+  <form action="{{ url_for('common.mark_notifications_read') }}" method="POST">
+    <button type="submit" class="btn btn-secondary btn-sm">Mark All as Read</button>
+  </form>
+</div>
+
+<div class="card">
+  {% if page_data.items %}
+    <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem;">
+      {% for n in page_data.items %}
+        <li style="background: {% if not n.is_read %}rgba(59, 130, 246, 0.08){% else %}rgba(255, 255, 255, 0.02){% endif %}; border-left: 4px solid {% if not n.is_read %}var(--primary){% else %}var(--border-color){% endif %}; border-radius: var(--radius-md); padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.25rem;">
+              <span class="badge badge-info">{{ n.category }}</span>
+              <strong style="color: var(--text-primary);">{{ n.title }}</strong>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">{{ n.message }}</p>
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); white-space: nowrap;">
+            {{ n.created_at.strftime('%b %d, %H:%M') }}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p style="text-align: center; color: var(--text-secondary); padding: 2rem 0;">No notifications in your inbox.</p>
+  {% endif %}
+</div>
+{% endblock %}

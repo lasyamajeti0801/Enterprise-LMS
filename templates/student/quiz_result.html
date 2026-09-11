@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz Results: {{ attempt.quiz.title }} - Student Portal{% endblock %}
+
+{% block content %}
+<div style="max-width: 750px; margin: 0 auto;">
+  <div class="card" style="text-align: center; padding: 2.5rem; margin-bottom: 2rem;">
+    {% if attempt.is_passed %}
+      <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🎉</div>
+      <h1 class="page-title" style="color: var(--success); font-size: 2.2rem; margin-bottom: 0.5rem;">Assessment Passed!</h1>
+      <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+        Congratulations! You have satisfied the passing criteria for <strong>{{ attempt.quiz.title }}</strong>.
+      </p>
+    {% else %}
+      <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">⚠️</div>
+      <h1 class="page-title" style="color: var(--danger); font-size: 2.2rem; margin-bottom: 0.5rem;">Passing Threshold Not Met</h1>
+      <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+        Passing score required: {{ attempt.quiz.passing_percentage }}%. You can review the course material and re-attempt.
+      </p>
+    {% endif %}
+
+    <div class="grid-3" style="margin: 1.5rem 0; background: rgba(255, 255, 255, 0.02); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+      <div>
+        <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Total Score</span>
+        <div style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary);">{{ attempt.score }} / {{ attempt.max_score }}</div>
+      </div>
+      <div>
+        <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Percentage</span>
+        <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">{{ attempt.percentage }}%</div>
+      </div>
+      <div>
+        <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">Status</span>
+        <div style="margin-top: 0.25rem;">
+          <span class="badge {% if attempt.is_passed %}badge-success{% else %}badge-danger{% endif %}">
+            {% if attempt.is_passed %}PASSED (+100 XP){% else %}FAILED{% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem;">
+      <a href="{{ url_for('student.learn_course', course_id=attempt.quiz.course_id) }}" class="btn btn-primary btn-lg">
+        ▶️ Return to Course Player
+      </a>
+      <a href="{{ url_for('student.dashboard') }}" class="btn btn-secondary btn-lg">
+        Dashboard
+      </a>
+    </div>
+  </div>
+
+  <!-- Detailed Answers Breakdown -->
+  {% if attempt.quiz.show_correct_answers %}
+    <div class="card">
+      <h2 class="card-title" style="margin-bottom: 1.5rem;">Question-by-Question Evaluation Breakdown</h2>
+      {% for ans in attempt.answers %}
+        <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <strong>Question {{ loop.index }}: {{ ans.question.prompt }}</strong>
+            <span class="badge {% if ans.is_correct %}badge-success{% else %}badge-danger{% endif %}">
+              {% if ans.is_correct %}+{{ ans.marks_awarded }} pts (Correct){% else %}0 pts (Incorrect){% endif %}
+            </span>
+          </div>
+          <div style="font-size: 0.85rem; color: var(--text-secondary);">Your Answer: <strong>{{ ans.student_answer }}</strong></div>
+          {% if not ans.is_correct and ans.question.correct_answers %}
+            <div style="font-size: 0.85rem; color: var(--success);">Correct Answer: <strong>{{ ans.question.correct_answers | join(', ') }}</strong></div>
+          {% endif %}
+          {% if ans.question.explanation %}
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;">💡 <em>{{ ans.question.explanation }}</em></div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

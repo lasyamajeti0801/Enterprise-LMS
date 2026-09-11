@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Administrator Login - Enterprise LMS{% endblock %}
+
+{% block content %}
+<div style="max-width: 480px; margin: 2rem auto;">
+
+  <!-- Portal Switcher Tabs -->
+  <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; background: var(--bg-card); padding: 0.35rem; border-radius: 12px; border: 1px solid var(--border-color);">
+    <a href="{{ url_for('auth.admin_login') }}" style="flex: 1; text-align: center; padding: 0.6rem 0.4rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; text-decoration: none; background: #ef4444; color: #fff;">
+      🛡️ Admin
+    </a>
+    <a href="{{ url_for('auth.instructor_login') }}" style="flex: 1; text-align: center; padding: 0.6rem 0.4rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; text-decoration: none; color: var(--text-secondary);">
+      👨‍🏫 Instructor
+    </a>
+    <a href="{{ url_for('auth.student_login') }}" style="flex: 1; text-align: center; padding: 0.6rem 0.4rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; text-decoration: none; color: var(--text-secondary);">
+      🎓 Student
+    </a>
+  </div>
+
+  <div class="card" style="border-top: 4px solid #ef4444; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.15);">
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+      <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🛡️</div>
+      <h1 class="card-title" style="font-size: 1.5rem; color: #ef4444;">ADMINISTRATOR PORTAL</h1>
+      <p style="font-size: 0.85rem; color: var(--text-secondary);">SuperAdmin governance, platform settings, audit logs & user management</p>
+    </div>
+
+    <!-- Demo Credentials Helper -->
+    <div style="background: rgba(239, 68, 68, 0.08); border: 1px dashed rgba(239, 68, 68, 0.35); border-radius: 8px; padding: 0.75rem; margin-bottom: 1.25rem; font-size: 0.82rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+        <span style="font-weight: 700; color: #ef4444;">🔑 Demo Administrator Credentials:</span>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="autofillAdmin()" style="padding: 2px 8px; font-size: 0.75rem;">
+          Autofill
+        </button>
+      </div>
+      <div><strong>Username:</strong> <code>admin</code> &nbsp;|&nbsp; <strong>Password:</strong> <code>adminpassword123</code></div>
+    </div>
+
+    <form method="POST" action="{{ url_for('auth.admin_login') }}">
+      <div class="form-group">
+        <label class="form-label" for="admin-id">Username or Email</label>
+        <input type="text" id="admin-id" name="identifier" class="form-control" placeholder="admin or admin@lms.local" value="admin" required autofocus>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="admin-pwd">Password</label>
+        <input type="password" id="admin-pwd" name="password" class="form-control" placeholder="••••••••" value="adminpassword123" required>
+      </div>
+
+      <button type="submit" class="btn btn-danger btn-lg" style="width: 100%; margin-top: 1rem; font-weight: 700;">
+        Sign In as Administrator &rarr;
+      </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+      <a href="{{ url_for('auth.landing') }}" style="font-size: 0.85rem; color: var(--text-secondary); text-decoration: none;">&larr; Back to 3-Portal Selection Page</a>
+    </div>
+  </div>
+</div>
+
+<script>
+function autofillAdmin() {
+  document.getElementById('admin-id').value = 'admin';
+  document.getElementById('admin-pwd').value = 'adminpassword123';
+}
+</script>
+{% endblock %}

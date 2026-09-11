@@ -1,0 +1,7 @@
+﻿Flask>=3.0.0,<3.2.0
+SQLAlchemy>=2.0.0,<2.1.0
+reportlab>=4.0.0,<6.0.0
+pytest>=8.0.0
+dulwich>=0.21.0
+Werkzeug>=3.0.0
+Jinja2>=3.1.0

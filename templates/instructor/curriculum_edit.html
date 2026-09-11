@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Curriculum Builder: {{ course.title }} - Instructor Portal{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Curriculum Builder: {{ course.code }}</h1>
+    <p class="page-subtitle">{{ course.title }} &bull; Manage structured modules, lessons, notes, and study materials</p>
+  </div>
+  <div style="display: flex; gap: 0.5rem;">
+    <a href="{{ url_for('instructor.courses') }}" class="btn btn-secondary btn-sm">&larr; My Courses</a>
+    {% if course.status == 'draft' %}
+      <form action="{{ url_for('instructor.submit_course', course_id=course.id) }}" method="POST" style="display:inline;">
+        <button type="submit" class="btn btn-success btn-sm">Submit for Admin Approval</button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+
+<div class="grid-2">
+  <!-- Left Column: Add Module & Lesson Forms -->
+  <div>
+    <!-- Add Module Form -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+      <h2 class="card-title" style="margin-bottom: 1rem;">➕ Add Curriculum Module</h2>
+      <form method="POST" action="{{ url_for('instructor.create_module', course_id=course.id) }}">
+        <div class="form-group">
+          <label class="form-label">Module Title</label>
+          <input type="text" name="title" class="form-control" placeholder="e.g. Module 1: Architecture & Design Patterns" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description (Optional)</label>
+          <input type="text" name="description" class="form-control" placeholder="Unit overview and outcomes">
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm">Create Module</button>
+      </form>
+    </div>
+
+    <!-- Add Lesson Form -->
+    {% if course.modules %}
+      <div class="card">
+        <h2 class="card-title" style="margin-bottom: 1rem;">➕ Add Lesson Content</h2>
+        <form method="POST" action="{{ url_for('instructor.create_lesson', module_id=course.modules[0].id) }}" id="add-lesson-form">
+          <div class="form-group">
+            <label class="form-label">Target Module</label>
+            <select name="module_select" class="form-control" onchange="document.getElementById('add-lesson-form').action = '/instructor/modules/' + this.value + '/lessons/create'">
+              {% for m in course.modules %}
+                <option value="{{ m.id }}">{{ m.title }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Lesson Title</label>
+            <input type="text" name="title" class="form-control" placeholder="e.g. Domain-Driven Design Fundamentals" required>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">Content Format</label>
+              <select name="content_type" class="form-control">
+                <option value="text">Interactive Text & Code</option>
+                <option value="video">Video Lecture</option>
+                <option value="interactive">Lab & Exercise</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Est. Duration (mins)</label>
+              <input type="number" name="duration_minutes" class="form-control" value="20" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Summary / Key Takeaways</label>
+            <input type="text" name="summary" class="form-control" placeholder="Brief outline of this lesson">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Instructional Content (Markdown supported)</label>
+            <textarea name="content" class="form-control" rows="8" placeholder="# Introduction&#10;&#10;In this lesson, we explore domain models and bounded contexts..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-sm">Publish Lesson to Module</button>
+        </form>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Right Column: Current Curriculum Tree -->
+  <div>
+    <div class="card">
+      <h2 class="card-title" style="margin-bottom: 1.25rem;">Curriculum Tree Structure</h2>
+      {% if course.modules %}
+        {% for m in course.modules %}
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1rem;">
+            <div style="font-weight: 700; color: var(--text-primary); font-size: 1rem; margin-bottom: 0.5rem;">
+              📁 {{ m.title }}
+            </div>
+            {% if m.lessons %}
+              <ul style="list-style: none; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem;">
+                {% for l in m.lessons %}
+                  <li style="font-size: 0.9rem; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between;">
+                    <span>📄 {{ l.title }} <span style="font-size: 0.75rem; color: var(--text-muted);">({{ l.duration_minutes }}m)</span></span>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p style="font-size: 0.8rem; color: var(--text-muted); padding-left: 1.25rem;">No lessons added to this module yet.</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <p style="color: var(--text-secondary); text-align: center; padding: 2rem 0;">No modules created yet. Use the form on the left to add your first module.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

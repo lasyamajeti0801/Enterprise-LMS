@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Student Login - Enterprise LMS{% endblock %}
+
+{% block content %}
+<div style="max-width: 480px; margin: 2rem auto;">
+
+  <!-- Portal Switcher Tabs -->
+  <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; background: var(--bg-card); padding: 0.35rem; border-radius: 12px; border: 1px solid var(--border-color);">
+    <a href="{{ url_for('auth.admin_login') }}" style="flex: 1; text-align: center; padding: 0.6rem 0.4rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; text-decoration: none; color: var(--text-secondary);">
+      🛡️ Admin
+    </a>
+    <a href="{{ url_for('auth.instructor_login') }}" style="flex: 1; text-align: center; padding: 0.6rem 0.4rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; text-decoration: none; color: var(--text-secondary);">
+      👨‍🏫 Instructor
+    </a>
+    <a href="{{ url_for('auth.student_login') }}" style="flex: 1; text-align: center; padding: 0.6rem 0.4rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; text-decoration: none; background: #3b82f6; color: #fff;">
+      🎓 Student
+    </a>
+  </div>
+
+  <div class="card" style="border-top: 4px solid #3b82f6; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);">
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+      <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎓</div>
+      <h1 class="card-title" style="font-size: 1.5rem; color: #3b82f6;">STUDENT LEARNING PORTAL</h1>
+      <p style="font-size: 0.85rem; color: var(--text-secondary);">Access courses, lessons, quizzes, assignments & PDF certificates</p>
+    </div>
+
+    <!-- Demo Credentials Helper -->
+    <div style="background: rgba(59, 130, 246, 0.08); border: 1px dashed rgba(59, 130, 246, 0.35); border-radius: 8px; padding: 0.75rem; margin-bottom: 1.25rem; font-size: 0.82rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+        <span style="font-weight: 700; color: #3b82f6;">🔑 Demo Student Credentials:</span>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="autofillStudent()" style="padding: 2px 8px; font-size: 0.75rem;">
+          Autofill
+        </button>
+      </div>
+      <div><strong>Username:</strong> <code>student_alex</code> &nbsp;|&nbsp; <strong>Password:</strong> <code>studentpassword123</code></div>
+    </div>
+
+    <form method="POST" action="{{ url_for('auth.student_login') }}">
+      <div class="form-group">
+        <label class="form-label" for="std-id">Username or Email</label>
+        <input type="text" id="std-id" name="identifier" class="form-control" placeholder="student_alex or alex@student.lms.local" value="student_alex" required autofocus>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="std-pwd">Password</label>
+        <input type="password" id="std-pwd" name="password" class="form-control" placeholder="••••••••" value="studentpassword123" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 1rem; font-weight: 700;">
+        Sign In as Student &rarr;
+      </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+      <a href="{{ url_for('auth.landing') }}" style="font-size: 0.85rem; color: var(--text-secondary); text-decoration: none;">&larr; Portal Selection</a>
+      <a href="{{ url_for('auth.register') }}" style="font-size: 0.85rem; color: var(--primary); font-weight: 600; text-decoration: none;">New student? Register &rarr;</a>
+    </div>
+  </div>
+</div>
+
+<script>
+function autofillStudent() {
+  document.getElementById('std-id').value = 'student_alex';
+  document.getElementById('std-pwd').value = 'studentpassword123';
+}
+</script>
+{% endblock %}

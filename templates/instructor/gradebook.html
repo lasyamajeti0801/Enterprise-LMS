@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Gradebook: {{ course.title }} - Instructor Portal{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Gradebook: {{ course.code }}</h1>
+    <p class="page-subtitle">{{ course.title }} &bull; Weighted evaluation: Assignments ({{ scheme.assignment_weight }}%) | Quizzes ({{ scheme.quiz_weight }}%) | Exams ({{ scheme.exam_weight }}%) | Attendance ({{ scheme.attendance_weight }}%)</p>
+  </div>
+  <div style="display: flex; gap: 0.5rem;">
+    <a href="{{ url_for('common.export_report', report_type='grades') }}" class="btn btn-secondary btn-sm">📥 Export Grades (CSV)</a>
+    <a href="{{ url_for('instructor.courses') }}" class="btn btn-secondary btn-sm">&larr; My Courses</a>
+  </div>
+</div>
+
+<div class="card">
+  {% if grades %}
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Student ID & Name</th>
+            <th>Assignments ({{ scheme.assignment_weight }}%)</th>
+            <th>Quizzes ({{ scheme.quiz_weight }}%)</th>
+            <th>Exams ({{ scheme.exam_weight }}%)</th>
+            <th>Attendance ({{ scheme.attendance_weight }}%)</th>
+            <th>Final Score</th>
+            <th>Letter Grade</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in grades %}
+            <tr>
+              <td>
+                <div style="font-weight: 700; color: var(--text-primary);">{{ item.enrollment.student.user.full_name }}</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">{{ item.enrollment.student.student_id_number }}</div>
+              </td>
+              <td>{{ item.grade.assignment_score }}%</td>
+              <td>{{ item.grade.quiz_score }}%</td>
+              <td>{{ item.grade.exam_score }}%</td>
+              <td>{{ item.grade.attendance_score }}%</td>
+              <td><strong style="color: var(--primary); font-size: 1.05rem;">{{ item.grade.total_weighted_score }}%</strong></td>
+              <td><span class="badge badge-primary">{{ item.grade.letter_grade }} ({{ item.grade.gpa_value }})</span></td>
+              <td>
+                {% if item.grade.is_passed %}
+                  <span class="badge badge-success">PASSED</span>
+                {% else %}
+                  <span class="badge badge-danger">FAILED</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p style="text-align: center; color: var(--text-secondary); padding: 2rem 0;">No enrolled students to grade yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

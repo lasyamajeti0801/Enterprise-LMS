@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Instructor Governance - Enterprise LMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Instructor Governance</h1>
+    <p class="page-subtitle">Faculty credentials, department assignments, and approvals</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Employee ID</th>
+          <th>Instructor Name</th>
+          <th>Department & Title</th>
+          <th>Expertise</th>
+          <th>Status</th>
+          <th>Rating</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for inst in page_data.items %}
+          <tr>
+            <td><strong>{{ inst.employee_id }}</strong></td>
+            <td>
+              <div style="font-weight: 600; color: var(--text-primary);">{{ inst.user.full_name }}</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">{{ inst.user.email }}</div>
+            </td>
+            <td>{{ inst.title }} &bull; {{ inst.department }}</td>
+            <td style="font-size: 0.85rem;">{{ inst.expertise_areas or 'General' }}</td>
+            <td>
+              <span class="badge {% if inst.approval_status == 'approved' %}badge-success{% elif inst.approval_status == 'pending_approval' %}badge-warning{% else %}badge-danger{% endif %}">
+                {{ inst.approval_status | upper }}
+              </span>
+            </td>
+            <td>⭐ {{ inst.rating }}</td>
+            <td>
+              {% if inst.approval_status == 'pending_approval' %}
+                <form action="{{ url_for('admin.set_instructor_status', instructor_id=inst.id) }}" method="POST" style="display:inline;">
+                  <input type="hidden" name="status" value="approved">
+                  <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                </form>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Create Quiz - Instructor Portal{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Create Quiz: {{ course.code }}</h1>
+    <p class="page-subtitle">{{ course.title }}</p>
+  </div>
+  <a href="{{ url_for('instructor.quizzes', course_id=course.id) }}" class="btn btn-secondary btn-sm">&larr; Back to Quizzes</a>
+</div>
+
+<div style="max-width: 750px;">
+  <div class="card">
+    <form method="POST" action="{{ url_for('instructor.create_quiz', course_id=course.id) }}">
+      <div class="form-group">
+        <label class="form-label">Quiz Title</label>
+        <input type="text" name="title" class="form-control" placeholder="e.g. Assessment 1: Python Data Structures & Algorithms" required>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Time Limit (Minutes)</label>
+          <input type="number" name="time_limit_minutes" class="form-control" value="20" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Passing Percentage (%)</label>
+          <input type="number" step="0.5" name="passing_percentage" class="form-control" value="60.0" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Instructions / Guidelines</label>
+        <textarea name="description" class="form-control" rows="3" placeholder="Read every question carefully before selecting your answer."></textarea>
+      </div>
+
+      <!-- Quick Add Question #1 -->
+      <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; margin: 1.5rem 0;">
+        <h3 style="font-size: 1rem; margin-bottom: 0.75rem; color: var(--text-primary);">📝 Initial Question</h3>
+        
+        <div class="form-group">
+          <label class="form-label">Question Prompt</label>
+          <input type="text" name="q1_prompt" class="form-control" placeholder="e.g. What is the time complexity of searching in a Python dictionary?">
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Option A</label>
+            <input type="text" name="q1_opt_0" class="form-control" placeholder="O(1) average">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Option B</label>
+            <input type="text" name="q1_opt_1" class="form-control" placeholder="O(n)">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Option C</label>
+            <input type="text" name="q1_opt_2" class="form-control" placeholder="O(n log n)">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Option D</label>
+            <input type="text" name="q1_opt_3" class="form-control" placeholder="O(log n)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Exact Correct Answer Text</label>
+          <input type="text" name="q1_correct" class="form-control" placeholder="e.g. O(1) average">
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-lg" style="margin-top: 1rem;">
+        Save Quiz & Publish to Students
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

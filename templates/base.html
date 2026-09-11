@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Enterprise Learning Management System{% endblock %}</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/player.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="role-{{ session_user_role or 'guest' }}" data-role="{{ session_user_role or 'guest' }}">
+
+  <!-- Top Navbar -->
+  <header class="top-navbar">
+    <div class="brand-logo">
+      <a href="{{ url_for('auth.landing') }}" style="color: inherit; display: flex; align-items: center; gap: 0.5rem;">
+        <span style="font-size: 1.5rem;">🎓</span>
+        <span>{{ app_name }}</span>
+      </a>
+      <span class="brand-badge">Enterprise</span>
+    </div>
+
+    <!-- Search bar for logged-in users -->
+    {% if session_user_id %}
+    <form action="{{ url_for('common.search') }}" method="GET" style="max-width: 320px; width: 100%; margin: 0 1.5rem;">
+      <input type="text" name="q" class="form-control form-control-sm" placeholder="Search courses, lessons, users..." value="{{ request.args.get('q', '') }}">
+    </form>
+    {% endif %}
+
+    <div class="nav-actions">
+      <!-- Dark/Light Theme Switcher -->
+      <button id="theme-toggle-btn" class="btn btn-secondary btn-sm" title="Toggle Dark/Light Mode">
+        🌓 Theme
+      </button>
+
+      {% if session_user_id %}
+        <!-- Notifications Bell -->
+        <a href="{{ url_for('common.notifications') }}" class="btn btn-secondary btn-sm" style="position: relative;">
+          🔔 Notifications
+          {% if unread_notifications_count > 0 %}
+            <span class="badge badge-danger" style="position: absolute; top: -6px; right: -6px; padding: 2px 6px; font-size: 0.65rem;">{{ unread_notifications_count }}</span>
+          {% endif %}
+        </a>
+
+        <!-- User Role Badge & Name -->
+        <div style="display: flex; align-items: center; gap: 0.6rem; margin-left: 0.5rem;">
+          <span class="badge badge-primary">{{ session_user_role | upper }}</span>
+          <span style="font-size: 0.9rem; font-weight: 600;">{{ session_user_name }}</span>
+          <a href="{{ url_for('auth.logout') }}" class="btn btn-danger btn-sm" style="margin-left: 0.5rem;">Logout</a>
+        </div>
+      {% else %}
+        <a href="{{ url_for('auth.landing') }}" class="btn btn-primary btn-sm">Portals</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <div class="app-container">
+    {% if session_user_id %}
+    <!-- Role-based Dynamic Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-heading">{{ session_user_role | upper }} NAVIGATION</div>
+      <ul class="nav-menu">
+        {% if session_user_role == 'admin' %}
+          <li><a href="{{ url_for('admin.dashboard') }}" class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">📊 Dashboard</a></li>
+          <li><a href="{{ url_for('admin.users') }}" class="nav-link {% if request.endpoint in ['admin.users', 'admin.create_user'] %}active{% endif %}">👥 User Management</a></li>
+          <li><a href="{{ url_for('admin.courses') }}" class="nav-link {% if request.endpoint == 'admin.courses' %}active{% endif %}">📚 Course Approvals</a></li>
+          <li><a href="{{ url_for('admin.instructors') }}" class="nav-link {% if request.endpoint == 'admin.instructors' %}active{% endif %}">👨‍🏫 Instructors</a></li>
+          <li><a href="{{ url_for('admin.audit_logs') }}" class="nav-link {% if request.endpoint in ['admin.audit_logs', 'admin.audit'] %}active{% endif %}">🛡️ Audit Logs</a></li>
+          <li><a href="{{ url_for('admin.settings') }}" class="nav-link {% if request.endpoint == 'admin.settings' %}active{% endif %}">⚙️ Platform Settings</a></li>
+          <li><a href="{{ url_for('admin.reports') }}" class="nav-link {% if request.endpoint == 'admin.reports' %}active{% endif %}">📈 Data Reports</a></li>
+        {% elif session_user_role == 'instructor' %}
+          <li><a href="{{ url_for('instructor.dashboard') }}" class="nav-link {% if request.endpoint == 'instructor.dashboard' %}active{% endif %}">📊 Dashboard</a></li>
+          <li><a href="{{ url_for('instructor.courses') }}" class="nav-link {% if request.endpoint in ['instructor.courses', 'instructor.edit_course', 'instructor.curriculum'] %}active{% endif %}">📚 My Courses</a></li>
+          <li><a href="{{ url_for('instructor.create_course') }}" class="nav-link {% if request.endpoint == 'instructor.create_course' %}active{% endif %}">➕ Create Course</a></li>
+          <li><a href="{{ url_for('common.calendar_view') }}" class="nav-link {% if request.endpoint == 'common.calendar_view' %}active{% endif %}">📅 Schedule Calendar</a></li>
+        {% elif session_user_role == 'student' %}
+          <li><a href="{{ url_for('student.dashboard') }}" class="nav-link {% if request.endpoint == 'student.dashboard' %}active{% endif %}">🏠 My Dashboard</a></li>
+          <li><a href="{{ url_for('student.catalog') }}" class="nav-link {% if request.endpoint in ['student.catalog', 'student.learn_player'] %}active{% endif %}">🔍 Explore Courses</a></li>
+          <li><a href="{{ url_for('student.assignments') }}" class="nav-link {% if request.endpoint == 'student.assignments' %}active{% endif %}">📝 Assignments</a></li>
+          <li><a href="{{ url_for('student.grades') }}" class="nav-link {% if request.endpoint == 'student.grades' %}active{% endif %}">📊 My Gradebook</a></li>
+          <li><a href="{{ url_for('student.certificates') }}" class="nav-link {% if request.endpoint == 'student.certificates' %}active{% endif %}">🏆 Certificates</a></li>
+          <li><a href="{{ url_for('student.gamification') }}" class="nav-link {% if request.endpoint == 'student.gamification' %}active{% endif %}">⚡ XP & Badges</a></li>
+          <li><a href="{{ url_for('common.calendar_view') }}" class="nav-link {% if request.endpoint == 'common.calendar_view' %}active{% endif %}">📅 Class Calendar</a></li>
+        {% endif %}
+      </ul>
+    </aside>
+    {% endif %}
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <div class="page-body">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="alert-container">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                  <span>{{ message }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

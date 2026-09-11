@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Course Administration - Enterprise LMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Course Administration</h1>
+    <p class="page-subtitle">Curriculum review, approvals, publishing, and archiving</p>
+  </div>
+</div>
+
+<!-- Filters Bar -->
+<div class="card" style="margin-bottom: 1.5rem; padding: 1rem 1.5rem;">
+  <form method="GET" action="{{ url_for('admin.courses') }}" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+    <div style="flex: 1; min-width: 200px;">
+      <label class="form-label" style="font-size: 0.8rem;">Search Course</label>
+      <input type="text" name="q" class="form-control" placeholder="Code or title..." value="{{ current_q }}">
+    </div>
+    <div style="min-width: 160px;">
+      <label class="form-label" style="font-size: 0.8rem;">Workflow Status</label>
+      <select name="status" class="form-control">
+        <option value="">All Statuses</option>
+        <option value="pending_approval" {% if current_status == 'pending_approval' %}selected{% endif %}>Pending Approval</option>
+        <option value="approved" {% if current_status == 'approved' %}selected{% endif %}>Approved</option>
+        <option value="published" {% if current_status == 'published' %}selected{% endif %}>Published</option>
+        <option value="draft" {% if current_status == 'draft' %}selected{% endif %}>Draft</option>
+        <option value="archived" {% if current_status == 'archived' %}selected{% endif %}>Archived</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-secondary btn-sm" style="height: 38px;">Filter</button>
+  </form>
+</div>
+
+<!-- Courses Table -->
+<div class="card">
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Course</th>
+          <th>Category</th>
+          <th>Instructor</th>
+          <th>Status</th>
+          <th>Enrollments</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in page_data.items %}
+          <tr>
+            <td>
+              <div style="font-weight: 700; color: var(--text-primary);">{{ c.code }}: {{ c.title }}</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">{{ c.difficulty }} &bull; {{ c.duration_hours }} hrs &bull; Pass: {{ c.passing_grade }}%</div>
+            </td>
+            <td><span class="badge badge-info">{{ c.category }}</span></td>
+            <td>{{ c.instructor.user.full_name if c.instructor else 'Unassigned' }}</td>
+            <td>
+              <span class="badge {% if c.status == 'published' %}badge-success{% elif c.status == 'pending_approval' %}badge-warning{% elif c.status == 'approved' %}badge-primary{% else %}badge-danger{% endif %}">
+                {{ c.status | upper }}
+              </span>
+            </td>
+            <td>{{ c.active_enrollment_count }} / {{ c.capacity }}</td>
+            <td>
+              <div style="display: flex; gap: 0.4rem;">
+                {% if c.status == 'pending_approval' %}
+                  <form action="{{ url_for('admin.approve_course', course_id=c.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                  </form>
+                  <form action="{{ url_for('admin.reject_course', course_id=c.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                  </form>
+                {% elif c.status == 'approved' %}
+                  <form action="{{ url_for('admin.publish_course', course_id=c.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-primary btn-sm">Publish</button>
+                  </form>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

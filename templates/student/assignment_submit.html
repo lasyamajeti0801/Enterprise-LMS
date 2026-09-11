@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Submit: {{ assignment.title }} - Student Portal{% endblock %}
+
+{% block content %}
+<div style="max-width: 750px; margin: 0 auto;">
+  <div style="margin-bottom: 1.5rem;">
+    <a href="{{ url_for('student.assignments') }}" class="btn btn-secondary btn-sm">&larr; Back to Assignments</a>
+  </div>
+
+  <div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+      <span class="badge badge-primary">{{ assignment.course.code }}</span>
+      <span class="badge badge-warning">Due: {{ assignment.due_date.strftime('%B %d, %Y %H:%M') }}</span>
+    </div>
+
+    <h1 class="page-title" style="font-size: 1.8rem; margin-bottom: 1rem;">{{ assignment.title }}</h1>
+    
+    <div style="background: rgba(255, 255, 255, 0.02); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin-bottom: 1.5rem;">
+      <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">Instructions:</h3>
+      <p style="color: var(--text-secondary); line-height: 1.6; white-space: pre-line;">{{ assignment.instructions }}</p>
+    </div>
+
+    {% if submission and submission.status == 'graded' %}
+      <div style="background: var(--success-light); border: 1px solid var(--success); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <h3 style="color: var(--success); font-size: 1.1rem; margin-bottom: 0.5rem;">Official Evaluation: {{ submission.score }} / {{ assignment.max_marks }} pts</h3>
+        <p style="color: var(--text-secondary); font-size: 0.95rem;"><strong>Instructor Feedback:</strong> {{ submission.instructor_feedback or 'Great work!' }}</p>
+      </div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('student.submit_assignment', assignment_id=assignment.id) }}">
+      <div class="form-group">
+        <label class="form-label">Deliverable Content / Code / Solution Notes</label>
+        <textarea name="submission_text" class="form-control" rows="8" placeholder="Paste your solution code, implementation description, or deliverables here..." required>{{ submission.submission_text if submission else '' }}</textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
+        {% if submission %}Resubmit Updated Work{% else %}Submit Assignment Work (+80 XP){% endif %}
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

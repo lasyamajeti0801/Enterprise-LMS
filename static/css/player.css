@@ -1,0 +1,139 @@
+/* Course Learning Player split-screen styling */
+
+.player-container {
+  display: flex;
+  height: calc(100vh - 68px);
+  overflow: hidden;
+}
+
+.player-sidebar {
+  width: 340px;
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+
+.player-sidebar-header {
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.player-course-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.player-modules-list {
+  list-style: none;
+  padding: 0.75rem;
+}
+
+.player-module-item {
+  margin-bottom: 0.75rem;
+}
+
+.player-module-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 0.5rem 0.75rem;
+}
+
+.player-lessons-list {
+  list-style: none;
+}
+
+.player-lesson-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  transition: all var(--transition-fast);
+}
+
+.player-lesson-link:hover, .player-lesson-link.active {
+  background-color: var(--primary-light);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.player-lesson-link.completed {
+  color: var(--success);
+}
+
+.player-content-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2.5rem 3rem;
+  background-color: var(--bg-primary);
+}
+
+.lesson-article {
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.lesson-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.lesson-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.lesson-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.lesson-body {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.lesson-body h2, .lesson-body h3 {
+  color: var(--text-primary);
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.lesson-body p {
+  margin-bottom: 1.25rem;
+}
+
+.lesson-body pre {
+  background-color: var(--bg-input);
+  padding: 1.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  font-family: monospace;
+}
+
+.lesson-actions {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

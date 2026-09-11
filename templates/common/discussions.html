@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Course Forum: {{ course.title }} - Enterprise LMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Course Discussions: {{ course.code }}</h1>
+    <p class="page-subtitle">{{ course.title }} &bull; Peer-to-peer discussions, Q&A, and instructor support</p>
+  </div>
+</div>
+
+<div class="grid-2">
+  <!-- Topic Creation Form -->
+  <div class="card">
+    <h2 class="card-title" style="margin-bottom: 1rem;">💬 Start a New Discussion</h2>
+    <form method="POST" action="{{ url_for('common.create_topic', course_id=course.id) }}">
+      <div class="form-group">
+        <label class="form-label">Topic Title</label>
+        <input type="text" name="title" class="form-control" placeholder="e.g. Question on Module 2 OOP inheritance exercise" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Content / Question Details</label>
+        <textarea name="content" class="form-control" rows="5" placeholder="Explain your question or discussion point in detail..." required></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-sm">Post Discussion Topic</button>
+    </form>
+  </div>
+
+  <!-- Discussion Threads List -->
+  <div class="card">
+    <h2 class="card-title" style="margin-bottom: 1.25rem;">Active Discussion Threads</h2>
+    {% if page_data.items %}
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        {% for topic in page_data.items %}
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.4rem;">
+              <h3 style="font-size: 1.05rem; font-weight: 700;">
+                <a href="{{ url_for('common.topic_detail', topic_id=topic.id) }}" style="color: var(--primary);">{{ topic.title }}</a>
+              </h3>
+              <span class="badge badge-info">{{ topic.reply_count }} replies</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">{{ topic.content | truncate(100) }}</p>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">
+              Started by <strong>{{ topic.author.full_name if topic.author else 'Learner' }}</strong> &bull; {{ topic.created_at.strftime('%Y-%m-%d %H:%M') }}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="color: var(--text-secondary); text-align: center; padding: 2rem 0;">No discussion threads created yet. Start the conversation!</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

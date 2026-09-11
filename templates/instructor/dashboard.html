@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Instructor Dashboard - Enterprise LMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Instructor Dashboard</h1>
+    <p class="page-subtitle">Manage your instructional courses, grading queues, and students</p>
+  </div>
+  <a href="{{ url_for('instructor.create_course') }}" class="btn btn-primary btn-sm">➕ Create New Course</a>
+</div>
+
+<!-- KPI Cards -->
+<div class="grid-4" style="margin-bottom: 2rem;">
+  <div class="kpi-card">
+    <div class="kpi-card-header">
+      <span class="kpi-title">My Courses</span>
+      <div class="kpi-icon" style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6;">📚</div>
+    </div>
+    <div class="kpi-value">{{ analytics.total_courses }}</div>
+    <div class="kpi-subtext">Authored courses</div>
+  </div>
+
+  <div class="kpi-card">
+    <div class="kpi-card-header">
+      <span class="kpi-title">Total Learners</span>
+      <div class="kpi-icon" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">🎓</div>
+    </div>
+    <div class="kpi-value">{{ analytics.total_students }}</div>
+    <div class="kpi-subtext">Active enrollments</div>
+  </div>
+
+  <div class="kpi-card">
+    <div class="kpi-card-header">
+      <span class="kpi-title">Pending Grading</span>
+      <div class="kpi-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">📝</div>
+    </div>
+    <div class="kpi-value">{{ analytics.pending_assignments }}</div>
+    <div class="kpi-subtext">Submissions to review</div>
+  </div>
+
+  <div class="kpi-card">
+    <div class="kpi-card-header">
+      <span class="kpi-title">Completion Rate</span>
+      <div class="kpi-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">📈</div>
+    </div>
+    <div class="kpi-value">{{ analytics.completion_rate }}%</div>
+    <div class="kpi-subtext">Average finish rate</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h2 class="card-title">My Teaching Courses</h2>
+    <a href="{{ url_for('instructor.courses') }}" class="btn btn-secondary btn-sm">Manage All</a>
+  </div>
+
+  {% if courses %}
+    <div class="grid-3">
+      {% for c in courses %}
+        <div class="card" style="background: rgba(255, 255, 255, 0.02);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+            <span class="badge badge-primary">{{ c.code }}</span>
+            <span class="badge {% if c.status == 'published' %}badge-success{% elif c.status == 'approved' %}badge-primary{% elif c.status == 'pending_approval' %}badge-warning{% else %}badge-danger{% endif %}">{{ c.status | upper }}</span>
+          </div>
+          <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">{{ c.title }}</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">{{ c.short_description | truncate(90) }}</p>
+          
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <a href="{{ url_for('instructor.curriculum', course_id=c.id) }}" class="btn btn-primary btn-sm" style="flex: 1;">Curriculum</a>
+            <a href="{{ url_for('instructor.gradebook', course_id=c.id) }}" class="btn btn-secondary btn-sm">Gradebook</a>
+            <a href="{{ url_for('instructor.attendance', course_id=c.id) }}" class="btn btn-secondary btn-sm">Attendance</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p style="text-align: center; color: var(--text-secondary); padding: 2rem 0;">You haven't authored any courses yet. Click "Create New Course" above!</p>
+  {% endif %}
+</div>
+{% endblock %}

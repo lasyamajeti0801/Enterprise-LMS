@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}System Audit Trail - Enterprise LMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Security & System Audit Logs</h1>
+    <p class="page-subtitle">Immutable timeline of administrative, security, and academic operations</p>
+  </div>
+  <a href="{{ url_for('common.export_report', report_type='audit') }}" class="btn btn-secondary btn-sm">📥 Export JSON</a>
+</div>
+
+<div class="card">
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Action</th>
+          <th>Entity</th>
+          <th>Performed By</th>
+          <th>IP Address</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in page_data.items %}
+          <tr>
+            <td style="font-size: 0.85rem;">{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td><span class="badge badge-primary">{{ log.action }}</span></td>
+            <td>{{ log.entity_type }} (ID: {{ log.entity_id or 'N/A' }})</td>
+            <td>{{ log.user.username if log.user else 'System' }}</td>
+            <td style="font-family: monospace; font-size: 0.85rem;">{{ log.ip_address }}</td>
+            <td><span class="badge badge-success">{{ log.status }}</span></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

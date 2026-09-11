@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Create User - Enterprise LMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Create User Account</h1>
+    <p class="page-subtitle">Provision a new account with assigned role and permissions</p>
+  </div>
+  <a href="{{ url_for('admin.users') }}" class="btn btn-secondary btn-sm">&larr; Back to Users</a>
+</div>
+
+<div style="max-width: 600px;">
+  <div class="card">
+    <form method="POST" action="{{ url_for('admin.create_user') }}">
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input type="text" name="first_name" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input type="text" name="last_name" class="form-control" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input type="text" name="username" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" name="email" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Assigned Role</label>
+        <select name="role_name" class="form-control" required>
+          {% for r in roles %}
+            <option value="{{ r.name }}">{{ r.display_name }} ({{ r.name | upper }})</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Initial Password</label>
+        <input type="password" name="password" class="form-control" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 1rem;">
+        Save & Create User
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

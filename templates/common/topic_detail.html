@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}{{ topic.title }} - Course Discussions{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+  <div style="margin-bottom: 1.5rem;">
+    <a href="{{ url_for('common.discussions', course_id=topic.course_id) }}" class="btn btn-secondary btn-sm">&larr; Back to Forum</a>
+  </div>
+
+  <!-- Main Topic Card -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+      <span class="badge badge-primary">{{ topic.course.code }}</span>
+      <span style="font-size: 0.8rem; color: var(--text-muted);">{{ topic.created_at.strftime('%B %d, %Y %H:%M') }}</span>
+    </div>
+
+    <h1 class="page-title" style="font-size: 1.8rem; margin-bottom: 1rem;">{{ topic.title }}</h1>
+    <div style="font-size: 1rem; color: var(--text-secondary); line-height: 1.7; white-space: pre-line; margin-bottom: 1.5rem;">
+      {{ topic.content }}
+    </div>
+
+    <div style="font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+      Author: <strong>{{ topic.author.full_name if topic.author else 'Learner' }}</strong> ({{ topic.author.role_name | upper if topic.author else 'STUDENT' }})
+    </div>
+  </div>
+
+  <!-- Replies List -->
+  <div class="card" style="margin-bottom: 2rem;">
+    <h2 class="card-title" style="margin-bottom: 1.5rem;">Replies & Instructor Answers ({{ topic.replies | length }})</h2>
+    {% if topic.replies %}
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        {% for rep in topic.replies %}
+          <div style="background: {% if rep.is_instructor_answer %}rgba(139, 92, 246, 0.08){% else %}rgba(255, 255, 255, 0.02){% endif %}; border: 1px solid {% if rep.is_instructor_answer %}var(--accent){% else %}var(--border-color){% endif %}; border-radius: var(--radius-md); padding: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <div style="font-weight: 700; color: var(--text-primary);">
+                {{ rep.author.full_name if rep.author else 'Community Member' }}
+                {% if rep.is_instructor_answer %}
+                  <span class="badge badge-warning" style="margin-left: 0.5rem;">👨‍🏫 INSTRUCTOR ANSWER</span>
+                {% endif %}
+              </div>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">{{ rep.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+            </div>
+            <div style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; white-space: pre-line;">
+              {{ rep.content }}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="color: var(--text-muted); text-align: center; padding: 1.5rem 0;">No replies yet. Be the first to answer!</p>
+    {% endif %}
+  </div>
+
+  <!-- Post Reply Form -->
+  <div class="card">
+    <h2 class="card-title" style="margin-bottom: 1rem;">Leave a Reply</h2>
+    <form method="POST" action="{{ url_for('common.topic_detail', topic_id=topic.id) }}">
+      <div class="form-group">
+        <textarea name="content" class="form-control" rows="4" placeholder="Write your response or helpful explanation..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-sm">Post Reply</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

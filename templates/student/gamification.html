@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Gamification & Achievements - Student Portal{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Gamification & Scholar Ranking</h1>
+    <p class="page-subtitle">Track your learning streaks, unlock achievement badges, and climb the leaderboard</p>
+  </div>
+</div>
+
+<div class="grid-3" style="margin-bottom: 2rem;">
+  <div class="card" style="text-align: center; border-top: 4px solid var(--primary);">
+    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⚡</div>
+    <div style="font-size: 2rem; font-weight: 800; color: var(--text-primary);">{{ points.total_xp }} XP</div>
+    <p style="font-size: 0.85rem; color: var(--text-muted);">Total Experience Earned</p>
+  </div>
+
+  <div class="card" style="text-align: center; border-top: 4px solid var(--accent);">
+    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⭐</div>
+    <div style="font-size: 2rem; font-weight: 800; color: var(--accent);">Level {{ points.current_level }}</div>
+    <p style="font-size: 0.85rem; color: var(--text-muted);">Academic Scholar Rank</p>
+  </div>
+
+  <div class="card" style="text-align: center; border-top: 4px solid var(--danger);">
+    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔥</div>
+    <div style="font-size: 2rem; font-weight: 800; color: var(--danger);">{{ points.current_streak_days }} Days</div>
+    <p style="font-size: 0.85rem; color: var(--text-muted);">Consecutive Daily Streak</p>
+  </div>
+</div>
+
+<div class="grid-2">
+  <!-- Earned Badges Showcase -->
+  <div class="card">
+    <h2 class="card-title" style="margin-bottom: 1.25rem;">🏆 Achievement Badges ({{ badges | length }} Unlocked)</h2>
+    {% if badges %}
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+        {% for b in badges %}
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; text-align: center;">
+            <div style="font-size: 2.2rem; margin-bottom: 0.4rem;">🏅</div>
+            <div style="font-weight: 700; color: var(--text-primary); font-size: 0.95rem;">{{ b.name }}</div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem;">{{ b.description }}</p>
+            <span class="badge badge-warning" style="margin-top: 0.5rem;">+{{ b.xp_reward }} XP</span>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="color: var(--text-secondary); text-align: center; padding: 2rem 0;">Complete lessons, submit assignments, and ace quizzes to unlock badges!</p>
+    {% endif %}
+  </div>
+
+  <!-- Global Leaderboard -->
+  <div class="card">
+    <h2 class="card-title" style="margin-bottom: 1.25rem;">🏅 Top Scholar Leaderboard</h2>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Learner</th>
+            <th>Level</th>
+            <th>Total XP</th>
+            <th>Streak</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in leaderboard %}
+            <tr {% if entry.user_id == session_user_id %}style="background: var(--primary-light); font-weight: 700;"{% endif %}>
+              <td>
+                {% if entry.rank == 1 %}🥇{% elif entry.rank == 2 %}🥈{% elif entry.rank == 3 %}🥉{% else %}#{{ entry.rank }}{% endif %}
+              </td>
+              <td>
+                <div style="color: var(--text-primary);">{{ entry.full_name }}</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">@{{ entry.username }}</div>
+              </td>
+              <td><span class="badge badge-info">Lvl {{ entry.level }}</span></td>
+              <td><strong>{{ entry.total_xp }} XP</strong></td>
+              <td>🔥 {{ entry.streak }}d</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

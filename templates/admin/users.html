@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}User Management - Enterprise LMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">User Management</h1>
+    <p class="page-subtitle">Manage all administrator, instructor, and student accounts</p>
+  </div>
+  <a href="{{ url_for('admin.create_user') }}" class="btn btn-primary btn-sm">➕ Create New User</a>
+</div>
+
+<!-- Filters Bar -->
+<div class="card" style="margin-bottom: 1.5rem; padding: 1rem 1.5rem;">
+  <form method="GET" action="{{ url_for('admin.users') }}" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+    <div style="flex: 1; min-width: 200px;">
+      <label class="form-label" style="font-size: 0.8rem;">Search User</label>
+      <input type="text" name="q" class="form-control" placeholder="Name, username, or email..." value="{{ current_q }}">
+    </div>
+    <div style="min-width: 150px;">
+      <label class="form-label" style="font-size: 0.8rem;">Role</label>
+      <select name="role" class="form-control">
+        <option value="">All Roles</option>
+        {% for r in roles %}
+          <option value="{{ r.name }}" {% if current_role == r.name %}selected{% endif %}>{{ r.display_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div style="min-width: 130px;">
+      <label class="form-label" style="font-size: 0.8rem;">Status</label>
+      <select name="status" class="form-control">
+        <option value="">All Statuses</option>
+        <option value="active" {% if current_status == 'active' %}selected{% endif %}>Active</option>
+        <option value="suspended" {% if current_status == 'suspended' %}selected{% endif %}>Suspended</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-secondary btn-sm" style="height: 38px;">Filter</button>
+  </form>
+</div>
+
+<!-- User Table -->
+<div class="card">
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Login Count</th>
+          <th>Last Login</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in page_data.items %}
+          <tr>
+            <td>
+              <div style="font-weight: 600; color: var(--text-primary);">{{ u.full_name }}</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">@{{ u.username }} &bull; {{ u.email }}</div>
+            </td>
+            <td>
+              <span class="badge {% if u.role_name == 'admin' %}badge-danger{% elif u.role_name == 'instructor' %}badge-warning{% else %}badge-primary{% endif %}">
+                {{ u.role_name | upper }}
+              </span>
+            </td>
+            <td>
+              <span class="badge {% if u.status == 'active' %}badge-success{% else %}badge-danger{% endif %}">
+                {{ u.status }}
+              </span>
+            </td>
+            <td>{{ u.login_count }}</td>
+            <td style="font-size: 0.85rem;">{{ u.last_login_at.strftime('%Y-%m-%d %H:%M') if u.last_login_at else 'Never' }}</td>
+            <td>
+              <form action="{{ url_for('admin.toggle_user_status', user_id=u.id) }}" method="POST" style="display: inline;">
+                <button type="submit" class="btn btn-sm {% if u.status == 'active' %}btn-danger{% else %}btn-success{% endif %}">
+                  {% if u.status == 'active' %}Suspend{% else %}Activate{% endif %}
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  {% if page_data.total_pages > 1 %}
+    <ul class="pagination">
+      {% for p in page_data.iter_pages() %}
+        {% if p %}
+          <li class="page-item {% if p == page_data.page %}active{% endif %}">
+            <a href="{{ url_for('admin.users', page=p, q=current_q, role=current_role, status=current_status) }}" class="page-link">{{ p }}</a>
+          </li>
+        {% else %}
+          <li class="page-item"><span class="page-link">…</span></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  {% endif %}
+</div>
+{% endblock %}

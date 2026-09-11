@@ -1,0 +1,31 @@
+﻿__pycache__/
+*.py[cod]
+*.class
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Database & Logs
+*.db
+*.sqlite3
+logs/
+*.log
+
+# Pytest / Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Generated Uploads / Media
+uploads/certificates/*.pdf
+uploads/temp/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Institutional Reports - Enterprise LMS{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Institutional Reports & Exports</h1>
+    <p class="page-subtitle">Export accredited student, course, grade, and audit data for accreditation</p>
+  </div>
+</div>
+
+<div class="grid-3">
+  <div class="card">
+    <div style="font-size: 2rem; margin-bottom: 0.75rem;">👥</div>
+    <h2 class="card-title">Student Academic Roster</h2>
+    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+      Full list of enrolled students, majors, cumulative GPAs, and standing.
+    </p>
+    <a href="{{ url_for('common.export_report', report_type='students') }}" class="btn btn-primary btn-sm" style="width: 100%;">
+      📥 Export Students (CSV)
+    </a>
+  </div>
+
+  <div class="card">
+    <div style="font-size: 2rem; margin-bottom: 0.75rem;">📚</div>
+    <h2 class="card-title">Course Catalog & Status</h2>
+    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+      Curriculum inventory, active capacity, and instructor assignments.
+    </p>
+    <a href="{{ url_for('common.export_report', report_type='courses') }}" class="btn btn-primary btn-sm" style="width: 100%;">
+      📥 Export Courses (CSV)
+    </a>
+  </div>
+
+  <div class="card">
+    <div style="font-size: 2rem; margin-bottom: 0.75rem;">📊</div>
+    <h2 class="card-title">Final Gradebook Records</h2>
+    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+      Comprehensive weighted scores, letter grades, and pass/fail distributions.
+    </p>
+    <a href="{{ url_for('common.export_report', report_type='grades') }}" class="btn btn-primary btn-sm" style="width: 100%;">
+      📥 Export Gradebook (CSV)
+    </a>
+  </div>
+</div>
+{% endblock %}

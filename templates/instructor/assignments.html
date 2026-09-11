@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Assignments: {{ course.title }} - Instructor Portal{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Course Assignments: {{ course.code }}</h1>
+    <p class="page-subtitle">{{ course.title }} &bull; Manage homework, lab deliverables, and reviews</p>
+  </div>
+  <a href="{{ url_for('instructor.create_assignment', course_id=course.id) }}" class="btn btn-primary btn-sm">➕ Create Assignment</a>
+</div>
+
+<div class="card">
+  {% if course.assignments %}
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Assignment Title</th>
+            <th>Due Date</th>
+            <th>Max Marks</th>
+            <th>Submissions</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in course.assignments %}
+            <tr>
+              <td>
+                <div style="font-weight: 700; color: var(--text-primary);">{{ a.title }}</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">{{ a.instructions | truncate(80) }}</div>
+              </td>
+              <td>{{ a.due_date.strftime('%Y-%m-%d %H:%M') }}</td>
+              <td>{{ a.max_marks }} pts</td>
+              <td><span class="badge badge-info">{{ a.submissions | length }} submitted</span></td>
+              <td>
+                <a href="{{ url_for('instructor.assignment_submissions', assignment_id=a.id) }}" class="btn btn-primary btn-sm">
+                  Review & Grade Submissions
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p style="text-align: center; color: var(--text-secondary); padding: 2rem 0;">No assignments created for this course yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
