@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "enterprise-learning-management-system"
+version = "1.0.0"
+description = "Production-grade Enterprise Learning Management System with role-based dashboards"
+authors = ["Enterprise LMS Engineering Team <dev@enterprise-lms.local>"]
+readme = "README.md"
+packages = []
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+Flask = ">=3.0.0,<3.2.0"
+SQLAlchemy = ">=2.0.0,<2.1.0"
+reportlab = ">=4.0.0,<6.0.0"
+pytest = ">=8.0.0"
+dulwich = ">=0.21.0"
+Werkzeug = ">=3.0.0"
+Jinja2 = ">=3.1.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest-cov = ">=5.0.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

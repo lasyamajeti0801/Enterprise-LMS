@@ -3,66 +3,148 @@
 {% block title %}Welcome - Enterprise Learning Management System{% endblock %}
 
 {% block content %}
-<div class="landing-hero">
-  <h1 class="landing-title">LEARNING MANAGEMENT SYSTEM</h1>
-  <p class="landing-subtitle">Welcome to the LMS Platform. Please select your authorized portal to sign in.</p>
+<div class="landing-hero" style="max-width: 1200px; margin: 0 auto; padding: 3rem 1.5rem 4rem;">
+  <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.25); padding: 0.35rem 0.85rem; border-radius: 999px; font-size: 0.82rem; font-weight: 600; color: var(--primary); margin-bottom: 1.25rem;">
+    <span>⚡ Institutional Learning Management System &bull; Production Release v2.5.0</span>
+  </div>
+  <h1 class="landing-title" style="font-size: 2.85rem; font-weight: 800; letter-spacing: -0.035em; line-height: 1.15; margin-bottom: 0.85rem;">
+    Enterprise Education Ecosystem
+  </h1>
+  <p class="landing-subtitle" style="font-size: 1.15rem; color: var(--text-secondary); max-width: 680px; margin: 0 auto 3rem; line-height: 1.55;">
+    Unified multi-role platform engineered for institutional governance, academic curriculum design, and accredited student achievement.
+  </p>
   
-  <div class="portals-container">
+  <div class="portals-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-bottom: 3.5rem;">
     
     <!-- 1. ADMIN PORTAL CARD -->
-    <div class="portal-card admin-card">
-      <div class="portal-icon-wrapper" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">
-        🛡️
-      </div>
-      <h2 class="portal-name">ADMIN LOGIN</h2>
-      <p class="portal-desc">Manage the entire LMS platform, users, course approvals, platform security, and audit logs.</p>
-      
-      <div style="background: rgba(239, 68, 68, 0.08); border-radius: 6px; padding: 0.4rem 0.6rem; font-size: 0.78rem; margin-bottom: 1rem; color: var(--text-secondary);">
-        <code>admin</code> / <code>adminpassword123</code>
+    <div class="portal-card admin-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 2.25rem 1.75rem; text-align: left; display: flex; flex-direction: column; justify-content: space-between; position: relative; box-shadow: var(--shadow-md); transition: all var(--transition);">
+      <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #6366f1, #3b82f6); border-radius: var(--radius-xl) var(--radius-xl) 0 0;"></div>
+      <div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+          <div style="width: 52px; height: 52px; border-radius: 12px; background: rgba(99, 102, 241, 0.12); color: #6366f1; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; border: 1px solid rgba(99, 102, 241, 0.25);">
+            🛡️
+          </div>
+          <span class="badge" style="background: rgba(99, 102, 241, 0.1); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.2); font-size: 0.72rem; text-transform: uppercase;">Governance</span>
+        </div>
+        <h2 style="font-size: 1.35rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; letter-spacing: -0.015em;">Admin Portal</h2>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1.25rem;">
+          Comprehensive platform administration, granular RBAC user management, course approval workflows, and immutable audit logs.
+        </p>
+        
+        <ul style="list-style: none; margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.4rem;">
+          <li style="display: flex; align-items: center; gap: 0.4rem;">✓ User provisioning & access control</li>
+          <li style="display: flex; align-items: center; gap: 0.4rem;">✓ Course catalog approval queue</li>
+          <li style="display: flex; align-items: center; gap: 0.4rem;">✓ Security audit & CSV/JSON reports</li>
+        </ul>
       </div>
 
-      <a href="{{ url_for('auth.admin_login') }}" class="btn btn-danger btn-lg portal-btn">
-        Login as Administrator
-      </a>
+      <div>
+        <div style="background: rgba(99, 102, 241, 0.08); border: 1px dashed rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.8rem; margin-bottom: 1rem; color: var(--text-secondary); display: flex; justify-content: space-between; align-items: center;">
+          <span>Demo: <code>admin</code></span>
+          <span style="opacity: 0.7;"><code>adminpassword123</code></span>
+        </div>
+
+        <a href="{{ url_for('auth.admin_login') }}" class="btn btn-primary btn-lg portal-btn" style="width: 100%; font-weight: 700; background: #6366f1; border-color: #6366f1;">
+          Enter Admin Portal &rarr;
+        </a>
+      </div>
     </div>
 
     <!-- 2. INSTRUCTOR PORTAL CARD -->
-    <div class="portal-card instructor-card">
-      <div class="portal-icon-wrapper" style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6;">
-        👨‍🏫
-      </div>
-      <h2 class="portal-name">INSTRUCTOR LOGIN</h2>
-      <p class="portal-desc">Create and manage learning content, author curriculum, grade student submissions, and record attendance.</p>
-      
-      <div style="background: rgba(139, 92, 246, 0.08); border-radius: 6px; padding: 0.4rem 0.6rem; font-size: 0.78rem; margin-bottom: 1rem; color: var(--text-secondary);">
-        <code>dr_hopper</code> / <code>instructorpassword123</code>
+    <div class="portal-card instructor-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 2.25rem 1.75rem; text-align: left; display: flex; flex-direction: column; justify-content: space-between; position: relative; box-shadow: var(--shadow-md); transition: all var(--transition);">
+      <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #0ea5e9, #8b5cf6); border-radius: var(--radius-xl) var(--radius-xl) 0 0;"></div>
+      <div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+          <div style="width: 52px; height: 52px; border-radius: 12px; background: rgba(14, 165, 233, 0.12); color: #0ea5e9; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; border: 1px solid rgba(14, 165, 233, 0.25);">
+            👨‍🏫
+          </div>
+          <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #38bdf8; border: 1px solid rgba(14, 165, 233, 0.2); font-size: 0.72rem; text-transform: uppercase;">Faculty</span>
+        </div>
+        <h2 style="font-size: 1.35rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; letter-spacing: -0.015em;">Instructor Portal</h2>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1.25rem;">
+          Productive curriculum authoring, module & lesson hierarchy, submission grading queues, timed quiz builder, and attendance tracking.
+        </p>
+
+        <ul style="list-style: none; margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.4rem;">
+          <li style="display: flex; align-items: center; gap: 0.4rem;">✓ Curriculum tree editor & content</li>
+          <li style="display: flex; align-items: center; gap: 0.4rem;">✓ Rubric-based assignment grading</li>
+          <li style="display: flex; align-items: center; gap: 0.4rem;">✓ Class attendance & gradebook</li>
+        </ul>
       </div>
 
-      <a href="{{ url_for('auth.instructor_login') }}" class="btn btn-primary btn-lg portal-btn" style="background: linear-gradient(135deg, #8b5cf6, #6366f1);">
-        Login as Instructor
-      </a>
+      <div>
+        <div style="background: rgba(14, 165, 233, 0.08); border: 1px dashed rgba(14, 165, 233, 0.3); border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.8rem; margin-bottom: 1rem; color: var(--text-secondary); display: flex; justify-content: space-between; align-items: center;">
+          <span>Demo: <code>dr_hopper</code></span>
+          <span style="opacity: 0.7;"><code>instructorpassword123</code></span>
+        </div>
+
+        <a href="{{ url_for('auth.instructor_login') }}" class="btn btn-primary btn-lg portal-btn" style="width: 100%; font-weight: 700; background: linear-gradient(135deg, #0284c7, #6366f1); border: none;">
+          Enter Faculty Portal &rarr;
+        </a>
+      </div>
     </div>
 
     <!-- 3. STUDENT PORTAL CARD -->
-    <div class="portal-card student-card">
-      <div class="portal-icon-wrapper" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">
-        🎓
-      </div>
-      <h2 class="portal-name">STUDENT LOGIN</h2>
-      <p class="portal-desc">Learn, practice and track progress, submit assignments, take quizzes, and earn accredited certificates.</p>
-      
-      <div style="background: rgba(59, 130, 246, 0.08); border-radius: 6px; padding: 0.4rem 0.6rem; font-size: 0.78rem; margin-bottom: 1rem; color: var(--text-secondary);">
-        <code>student_alex</code> / <code>studentpassword123</code>
+    <div class="portal-card student-card" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 2.25rem 1.75rem; text-align: left; display: flex; flex-direction: column; justify-content: space-between; position: relative; box-shadow: var(--shadow-md); transition: all var(--transition);">
+      <div style="position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #3b82f6, #10b981); border-radius: var(--radius-xl) var(--radius-xl) 0 0;"></div>
+      <div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+          <div style="width: 52px; height: 52px; border-radius: 12px; background: rgba(59, 130, 246, 0.12); color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; border: 1px solid rgba(59, 130, 246, 0.25);">
+            🎓
+          </div>
+          <span class="badge" style="background: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); font-size: 0.72rem; text-transform: uppercase;">Learner</span>
+        </div>
+        <h2 style="font-size: 1.35rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; letter-spacing: -0.015em;">Student Portal</h2>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1.25rem;">
+          Immersive split-view course player, interactive quizzes with instant evaluation, GPA gradebook, XP streaks, and PDF certificates.
+        </p>
+
+        <ul style="list-style: none; margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.4rem;">
+          <li style="display: flex; align-items: center; gap: 0.4rem;">✓ Course catalog & interactive player</li>
+          <li style="display: flex; align-items: center; gap: 0.4rem;">✓ Timed quizzes & code assignments</li>
+          <li style="display: flex; align-items: center; gap: 0.4rem;">✓ Accredited PDF certificate generator</li>
+        </ul>
       </div>
 
-      <a href="{{ url_for('auth.student_login') }}" class="btn btn-primary btn-lg portal-btn">
-        Login as Student
-      </a>
-      <div style="margin-top: 1rem;">
-        <a href="{{ url_for('auth.register') }}" style="font-size: 0.85rem; color: var(--text-secondary); text-decoration: none;">New student? Register an account &rarr;</a>
+      <div>
+        <div style="background: rgba(59, 130, 246, 0.08); border: 1px dashed rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.8rem; margin-bottom: 1rem; color: var(--text-secondary); display: flex; justify-content: space-between; align-items: center;">
+          <span>Demo: <code>student_alex</code></span>
+          <span style="opacity: 0.7;"><code>studentpassword123</code></span>
+        </div>
+
+        <a href="{{ url_for('auth.student_login') }}" class="btn btn-primary btn-lg portal-btn" style="width: 100%; font-weight: 700;">
+          Enter Student Portal &rarr;
+        </a>
+        <div style="margin-top: 0.75rem; text-align: center;">
+          <a href="{{ url_for('auth.register') }}" style="font-size: 0.82rem; color: var(--text-secondary); text-decoration: none;">New student? Register account &rarr;</a>
+        </div>
       </div>
     </div>
 
+  </div>
+
+  <!-- Bottom Platform Features Banner -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem 2rem; text-align: center; font-size: 0.88rem;">
+    <div>
+      <div style="font-size: 1.4rem; margin-bottom: 0.25rem;">🔒</div>
+      <strong style="color: var(--text-primary); display: block; margin-bottom: 0.2rem;">Enterprise Security</strong>
+      <span style="color: var(--text-muted); font-size: 0.8rem;">PBKDF2 &bull; Granular RBAC &bull; Lockout Defense</span>
+    </div>
+    <div>
+      <div style="font-size: 1.4rem; margin-bottom: 0.25rem;">📜</div>
+      <strong style="color: var(--text-primary); display: block; margin-bottom: 0.2rem;">Vector Credentials</strong>
+      <a href="{{ url_for('common.verify_certificate') }}" style="color: var(--primary); font-size: 0.8rem; text-decoration: none;">Verify Certificate Portal &rarr;</a>
+    </div>
+    <div>
+      <div style="font-size: 1.4rem; margin-bottom: 0.25rem;">⚡</div>
+      <strong style="color: var(--text-primary); display: block; margin-bottom: 0.2rem;">100% Local Runtime</strong>
+      <span style="color: var(--text-muted); font-size: 0.8rem;">Zero external APIs or cloud keys required</span>
+    </div>
+    <div>
+      <div style="font-size: 1.4rem; margin-bottom: 0.25rem;">📊</div>
+      <strong style="color: var(--text-primary); display: block; margin-bottom: 0.2rem;">Analytics & Reports</strong>
+      <span style="color: var(--text-muted); font-size: 0.8rem;">CSV/JSON Exports & Canvas Charts</span>
+    </div>
   </div>
 </div>
 {% endblock %}

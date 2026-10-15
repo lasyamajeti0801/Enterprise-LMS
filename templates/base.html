@@ -9,9 +9,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/player.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}?v=4.0.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboards.css') }}?v=4.0.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/player.css') }}?v=4.0.0">
   {% block extra_css %}{% endblock %}
 </head>
 <body class="role-{{ session_user_role or 'guest' }}" data-role="{{ session_user_role or 'guest' }}">
@@ -28,8 +28,8 @@
 
     <!-- Search bar for logged-in users -->
     {% if session_user_id %}
-    <form action="{{ url_for('common.search') }}" method="GET" style="max-width: 320px; width: 100%; margin: 0 1.5rem;">
-      <input type="text" name="q" class="form-control form-control-sm" placeholder="Search courses, lessons, users..." value="{{ request.args.get('q', '') }}">
+    <form action="{{ url_for('common.search') }}" method="GET" style="max-width: 340px; width: 100%; margin: 0 1.5rem;">
+      <input type="text" name="q" class="form-control" style="height: 38px; font-size: 0.85rem; border-radius: 999px; padding: 0 1.15rem;" placeholder="🔍 Search courses, lessons, users..." value="{{ request.args.get('q', '') }}">
     </form>
     {% endif %}
 
@@ -42,17 +42,22 @@
       {% if session_user_id %}
         <!-- Notifications Bell -->
         <a href="{{ url_for('common.notifications') }}" class="btn btn-secondary btn-sm" style="position: relative;">
-          🔔 Notifications
+          🔔
           {% if unread_notifications_count > 0 %}
             <span class="badge badge-danger" style="position: absolute; top: -6px; right: -6px; padding: 2px 6px; font-size: 0.65rem;">{{ unread_notifications_count }}</span>
           {% endif %}
         </a>
 
-        <!-- User Role Badge & Name -->
-        <div style="display: flex; align-items: center; gap: 0.6rem; margin-left: 0.5rem;">
-          <span class="badge badge-primary">{{ session_user_role | upper }}</span>
-          <span style="font-size: 0.9rem; font-weight: 600;">{{ session_user_name }}</span>
-          <a href="{{ url_for('auth.logout') }}" class="btn btn-danger btn-sm" style="margin-left: 0.5rem;">Logout</a>
+        <!-- User Profile Pill -->
+        <div style="display: flex; align-items: center; gap: 0.65rem; background: var(--bg-card); padding: 0.3rem 0.75rem 0.3rem 0.35rem; border-radius: var(--radius-full); border: 1px solid var(--border-color); box-shadow: var(--shadow-xs);">
+          <div style="width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;">
+            {{ (session_user_name or 'U')[:2] | upper }}
+          </div>
+          <div style="display: flex; flex-direction: column; text-align: left; line-height: 1.15;">
+            <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-primary);">{{ session_user_name }}</span>
+            <span class="badge badge-primary" style="font-size: 0.62rem; padding: 1px 5px; width: fit-content;">{{ session_user_role | upper }}</span>
+          </div>
+          <a href="{{ url_for('auth.logout') }}" class="btn btn-ghost btn-sm" style="padding: 2px 8px; font-size: 0.75rem; color: var(--danger); margin-left: 0.25rem;" title="Sign out">Logout</a>
         </div>
       {% else %}
         <a href="{{ url_for('auth.landing') }}" class="btn btn-primary btn-sm">Portals</a>
@@ -64,7 +69,12 @@
     {% if session_user_id %}
     <!-- Role-based Dynamic Sidebar -->
     <aside class="sidebar">
-      <div class="sidebar-heading">{{ session_user_role | upper }} NAVIGATION</div>
+      <div style="padding: 0 0.5rem 1rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;">
+        <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted);">
+          {{ session_user_role | upper }} WORKSPACE
+        </span>
+        <span class="badge badge-success" style="font-size: 0.62rem; padding: 1px 6px;">Online</span>
+      </div>
       <ul class="nav-menu">
         {% if session_user_role == 'admin' %}
           <li><a href="{{ url_for('admin.dashboard') }}" class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">📊 Dashboard</a></li>
@@ -89,6 +99,10 @@
           <li><a href="{{ url_for('common.calendar_view') }}" class="nav-link {% if request.endpoint == 'common.calendar_view' %}active{% endif %}">📅 Class Calendar</a></li>
         {% endif %}
       </ul>
+      <div style="margin-top: auto; padding: 1.25rem 0.5rem 0.25rem; border-top: 1px solid var(--border-color); font-size: 0.72rem; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between;">
+        <span>🔒 RBAC v2.5.0</span>
+        <span style="color: var(--success); font-weight: 600;">● Active</span>
+      </div>
     </aside>
     {% endif %}
 

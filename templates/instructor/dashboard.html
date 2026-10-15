@@ -5,8 +5,11 @@
 {% block content %}
 <div class="page-header">
   <div>
+    <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(14, 165, 233, 0.25); padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600; color: #38bdf8; margin-bottom: 0.5rem;">
+      <span style="color: #10b981;">●</span> Faculty Instruction &bull; Academic Term Fall 2026
+    </div>
     <h1 class="page-title">Instructor Dashboard</h1>
-    <p class="page-subtitle">Manage your instructional courses, grading queues, and students</p>
+    <p class="page-subtitle">Manage your instructional courses, grading queues, cohorts, and curricula</p>
   </div>
   <a href="{{ url_for('instructor.create_course') }}" class="btn btn-primary btn-sm">➕ Create New Course</a>
 </div>
@@ -50,33 +53,68 @@
   </div>
 </div>
 
+<!-- Needs Attention Workflow Section -->
+{% if analytics.pending_assignments > 0 %}
+<div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--warning); background: rgba(245, 158, 11, 0.05);">
+  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <div style="width: 44px; height: 44px; border-radius: 10px; background: rgba(245, 158, 11, 0.15); color: var(--warning); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+        ⚠️
+      </div>
+      <div>
+        <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.2rem;">Action Required: Pending Submissions</h3>
+        <p style="font-size: 0.86rem; color: var(--text-secondary);">You have <strong>{{ analytics.pending_assignments }}</strong> student assignment submission(s) awaiting rubric grading and feedback.</p>
+      </div>
+    </div>
+    {% if courses %}
+      <a href="{{ url_for('instructor.assignments', course_id=courses[0].id) }}" class="btn btn-warning btn-sm" style="font-weight: 700;">
+        Open Grading Queue &rarr;
+      </a>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
 <div class="card">
   <div class="card-header">
-    <h2 class="card-title">My Teaching Courses</h2>
-    <a href="{{ url_for('instructor.courses') }}" class="btn btn-secondary btn-sm">Manage All</a>
+    <div>
+      <h2 class="card-title">My Teaching Courses</h2>
+      <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.2rem;">Active curriculum, enrolled cohorts, and performance</p>
+    </div>
+    <div style="display: flex; gap: 0.5rem;">
+      <a href="{{ url_for('instructor.courses') }}" class="btn btn-secondary btn-sm">Manage All Courses</a>
+      <a href="{{ url_for('instructor.create_course') }}" class="btn btn-primary btn-sm">➕ New Course</a>
+    </div>
   </div>
 
   {% if courses %}
     <div class="grid-3">
       {% for c in courses %}
-        <div class="card" style="background: rgba(255, 255, 255, 0.02);">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
-            <span class="badge badge-primary">{{ c.code }}</span>
-            <span class="badge {% if c.status == 'published' %}badge-success{% elif c.status == 'approved' %}badge-primary{% elif c.status == 'pending_approval' %}badge-warning{% else %}badge-danger{% endif %}">{{ c.status | upper }}</span>
+        <div class="course-card">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+              <span class="badge badge-primary" style="font-weight: 700;">{{ c.code }}</span>
+              <span class="badge {% if c.status == 'published' %}badge-success{% elif c.status == 'approved' %}badge-primary{% elif c.status == 'pending_approval' %}badge-warning{% else %}badge-danger{% endif %}">{{ c.status | upper }}</span>
+            </div>
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary); line-height: 1.3;">{{ c.title }}</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.45;">{{ c.short_description | truncate(95) }}</p>
+            
+            <div style="background: rgba(0, 0, 0, 0.12); border-radius: var(--radius-sm); padding: 0.6rem 0.75rem; margin-bottom: 1rem; display: flex; justify-content: space-between; font-size: 0.8rem;">
+              <span style="color: var(--text-secondary);">👥 <strong>{{ c.enrollments | length }}</strong> Enrolled</span>
+              <span style="color: var(--text-secondary);">⏱️ <strong>{{ c.duration_hours }}</strong> Hours</span>
+            </div>
           </div>
-          <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-primary);">{{ c.title }}</h3>
-          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">{{ c.short_description | truncate(90) }}</p>
-          
-          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-            <a href="{{ url_for('instructor.curriculum', course_id=c.id) }}" class="btn btn-primary btn-sm" style="flex: 1;">Curriculum</a>
-            <a href="{{ url_for('instructor.gradebook', course_id=c.id) }}" class="btn btn-secondary btn-sm">Gradebook</a>
-            <a href="{{ url_for('instructor.attendance', course_id=c.id) }}" class="btn btn-secondary btn-sm">Attendance</a>
+
+          <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: auto; padding-top: 0.5rem; border-top: 1px solid var(--border-subtle);">
+            <a href="{{ url_for('instructor.curriculum', course_id=c.id) }}" class="btn btn-primary btn-sm" style="flex: 1; font-weight: 600;">Curriculum</a>
+            <a href="{{ url_for('instructor.gradebook', course_id=c.id) }}" class="btn btn-secondary btn-sm" title="Course Gradebook">Gradebook</a>
+            <a href="{{ url_for('instructor.attendance', course_id=c.id) }}" class="btn btn-secondary btn-sm" title="Session Attendance">Attendance</a>
           </div>
         </div>
       {% endfor %}
     </div>
   {% else %}
-    <p style="text-align: center; color: var(--text-secondary); padding: 2rem 0;">You haven't authored any courses yet. Click "Create New Course" above!</p>
+    <p style="text-align: center; color: var(--text-secondary); padding: 2.5rem 0;">You haven't authored any courses yet. Click "Create New Course" above!</p>
   {% endif %}
 </div>
 {% endblock %}

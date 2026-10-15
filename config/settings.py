@@ -18,6 +18,7 @@ class BaseConfig:
     APP_NAME = "Enterprise LMS"
     APP_VERSION = "2.5.0"
     APP_TIMEZONE = "UTC"
+    SEND_FILE_MAX_AGE_DEFAULT = 0
 
     # Database settings
     SQLALCHEMY_TRACK_MODIFICATIONS = False

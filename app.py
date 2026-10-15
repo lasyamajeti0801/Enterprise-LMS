@@ -92,6 +92,14 @@ def create_app(config_class=None, config_name="development"):
             "unread_notifications_count": unread_count,
         }
 
+    # Disable client-side caching for instant UI reload
+    @app.after_request
+    def set_cache_control_headers(response):
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+        return response
+
     # Error Handlers
     @app.errorhandler(404)
     def handle_not_found(e):

@@ -14,6 +14,22 @@ This guide details how to install and configure the Enterprise LMS on **Windows,
 
 ---
 
+## 🔒 Deterministic Installation via Lockfile (Poetry)
+
+For certified reproducible builds across environments:
+```bash
+# 1. Install Poetry
+pip install poetry
+
+# 2. Install all pinned dependencies from poetry.lock
+poetry install --no-root
+
+# 3. Spawn shell inside the virtual environment
+poetry shell
+```
+
+---
+
 ## 🚀 Installation by Operating System
 
 ### 1. Windows Installation (PowerShell)

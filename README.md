@@ -48,29 +48,38 @@ Engineered strictly with **Python 3.12, Flask 3.1, SQLAlchemy 2.0 ORM, and Repor
 
 ---
 
-## ⚡ Quick Start
+## ⚡ Quick Start & Dependency Setup
 
 ### 1. Prerequisites
 * Python 3.11+ or Python 3.12+
-* Git (optional, or built-in dulwich git initialization)
+* Git (or built-in dulwich git initialization)
+* Poetry (recommended for lockfile install) or pip
 
-### 2. Environment Setup
+### 2. Installation Steps
+
+#### Option A: Deterministic Lockfile Install (Recommended - Poetry)
 ```bash
-# Clone the repository
-git clone <repository_url>
-cd "learning system"
+# Install exact frozen dependencies from poetry.lock
+poetry install --no-root
 
-# Create virtual environment
+# Activate the Poetry environment
+poetry shell
+```
+
+#### Option B: Standard Virtual Environment via Manifest (pip)
+```bash
+# 1. Create and activate virtual environment
 python -m venv venv
-
-# Activate virtual environment
-# Windows:
+# On Windows:
 .\venv\Scripts\activate
-# Linux/macOS:
+# On Linux/macOS:
 source venv/bin/activate
 
-# Install dependencies
+# 2. Upgrade pip and install manifest dependencies
+pip install --upgrade pip
 pip install -r requirements.txt
+# Alternatively, install strictly pinned lockfile:
+# pip install -r requirements.lock
 ```
 
 ### 3. Initialize Database & Seed Data

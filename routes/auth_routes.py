@@ -37,7 +37,7 @@ def login_router():
     return redirect(url_for("auth.landing"))
 
 
-@auth_bp.route("/admin-login")
+@auth_bp.route("/admin-login", methods=["GET", "POST"])
 @auth_bp.route("/auth/login/admin", methods=["GET", "POST"])
 def admin_login():
     """Admin portal login route."""
@@ -63,7 +63,7 @@ def admin_login():
     return render_template("auth/admin_login.html")
 
 
-@auth_bp.route("/instructor-login")
+@auth_bp.route("/instructor-login", methods=["GET", "POST"])
 @auth_bp.route("/auth/login/instructor", methods=["GET", "POST"])
 def instructor_login():
     """Instructor portal login route."""
@@ -89,7 +89,7 @@ def instructor_login():
     return render_template("auth/instructor_login.html")
 
 
-@auth_bp.route("/student-login")
+@auth_bp.route("/student-login", methods=["GET", "POST"])
 @auth_bp.route("/auth/login/student", methods=["GET", "POST"])
 def student_login():
     """Student portal login route."""
